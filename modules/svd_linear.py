@@ -7,6 +7,7 @@ import numpy as np
 class SVDLinear(nn.Module):
     def __init__(self, U, S, V, bias=None,sigma_fuse='UV') -> None:
         super().__init__()
+        
         self.ALinear = nn.Linear(U.size(1), U.size(0), bias=bias is not None)
         
         if bias is not None:
@@ -32,7 +33,8 @@ class SVDLinear(nn.Module):
         ic_split=1,
         oc_split=1,
         alpha=1,
-        sigma_fuse="UV"
+        sigma_fuse="UV",
+        fix_bases = None
     ):
         if param_ratio >= 1:
             return linear
@@ -40,6 +42,11 @@ class SVDLinear(nn.Module):
         compressed_params = int(n_params * param_ratio)
         assert ic_split == 1 or oc_split == 1
         rank = compressed_params // (linear.in_features + linear.out_features)
+        
+        if fix_bases is not None:
+            multiple = rank // fix_bases
+            rank = (multiple + 1) * fix_bases
+
         # print("rank", rank)
         w = linear.weight.data.float()
         if act_aware:

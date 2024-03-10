@@ -92,5 +92,6 @@ def binary_search_truncation_rank(model, sensitivity_dict, calib_loader, args):
             alpha=args.alpha,
             act_aware=args.act_aware,
             sigma_fuse=args.sigma_fuse,
+            fix_bases = 128
         )
         setattr(info["father"], info["name"], svd_linear)
